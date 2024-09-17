@@ -8,17 +8,34 @@
 
 package goetterz;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
+import java.util.OptionalInt;
+import java.util.Scanner;
 import java.util.stream.IntStream;
 
+/**
+ * This is my main class that sets up the different methods needed to run the main
+ * @author Zak Goetter
+ */
 public class Driver {
 
-
+    /**
+     * This int holds the value of the minimum amount of dice allowed
+     */
     public static final int MIN_DICE = 2;
+    /**
+     * This int holds the value of the maximum amount of dice allowed
+     */
     public static final int MAX_DICE = 100;
 
 
-
+    /**
+     * This method gets the Input from the user and checks
+     * that they are giving the correct allowed input
+     * @return - returns an int array with the users input
+     */
     private static int[] getInput() {
 
         Scanner scan = new Scanner(System.in);
@@ -36,11 +53,11 @@ public class Driver {
                         " but only received " + stringInput.length + ".");
         }
 
-        int[] config = new int[stringInput.length];
+        int[] conf = new int[stringInput.length];
 
-        for (int i = 0; i < config.length; i++) {
+        for (int i = 0; i < conf.length; i++) {
             try {
-                config[i] = Integer.parseInt(stringInput[i]);
+                conf[i] = Integer.parseInt(stringInput[i]);
             } catch (NumberFormatException e) {
                 throw new InputMismatchException("Invalid input: " +
                         "All values must be whole numbers.");
@@ -48,20 +65,27 @@ public class Driver {
 
         }
 
-        if (config[1] < Die.MIN_SIDES || config[1] > Die.MAX_SIDES) {
+        if (conf[1] < Die.MIN_SIDES || conf[1] > Die.MAX_SIDES) {
             throw new InputMismatchException("Bad die creation: " +
-                    "Illegal number of sides: " + config[1] + ".");
+                    "Illegal number of sides: " + conf[1] + ".");
         }
 
-        if (config[0] < MIN_DICE || config[0] > MAX_DICE) {
+        if (conf[0] < MIN_DICE || conf[0] > MAX_DICE) {
             throw new InputMismatchException("Bad die creation: " +
-                    "Illegal number of dice: " + config[1] + ".");
+                    "Illegal number of dice: " + conf[1] + ".");
         }
 
-        return config;
+        return conf;
 
     }
 
+
+    /**
+     * This method creates the Dice
+     * @param numDice - takes in the number of dice needed
+     * @param numSides - takes in the number of sides on the dice
+     * @return - this returns a Die array with the dice set up that was input by the user
+     */
     private static Die[] createDice(int numDice, int numSides) {
         Die[] dice = new Die[numDice];
 
@@ -72,6 +96,14 @@ public class Driver {
         return dice;
     }
 
+
+    /**
+     * This method rolls all the dice in a Die array
+     * @param dice - takes in a Die array
+     * @param numSides - takes in the number of sides on the Dice
+     * @param numRolls - takes in the number of rolls to do with the Dice
+     * @return - returns an int array with the different amounts of each number rolled
+     */
     private static int[] rollDice(Die[] dice, int numSides, int numRolls) {
         int[] result = new int[(dice.length * numSides)- dice.length + 1];
 
@@ -90,7 +122,7 @@ public class Driver {
     }
 
     /**
-     * Finds the max value in the provided array
+     * This method finds the max value in the provided array
      * @param rolls - takes in an int array of rolls
      * @return Max Value
      * @throws NoSuchElementException -- Array is Empty
@@ -106,6 +138,12 @@ public class Driver {
         }
     }
 
+    /**
+     * This method create the report showing the distribution of dice rolls
+     * @param numDice - takes in the number of dice
+     * @param rolls - takes in an int array containing the frequencies of each roll
+     * @param max - takes in the max value allowed
+     */
     private static void report(int numDice, int[] rolls, int max) {
         final int totalRolls = IntStream.of(rolls).sum();
         final int scMult = 10;
@@ -139,6 +177,10 @@ public class Driver {
         }
     }
 
+    /**
+     * This is the main method that runs the code
+     * @param args - this is part of how the method works
+     */
     public static void main(String[] args) {
         int[] conf = new int[0];
 
@@ -150,14 +192,14 @@ public class Driver {
             }
         }
 
-        int numDice = conf[0];
-        int numSides = conf[1];
-        int numRolls = conf[2];
+        int numD = conf[0];
+        int numS = conf[1];
+        int numR = conf[2];
 
-        Die[] dice = createDice(numDice, numSides);
-        int[] results = rollDice(dice, numSides, numRolls);
+        Die[] dice = createDice(numD, numS);
+        int[] results = rollDice(dice, numS, numR);
 
-        report(numDice, results, findMax(results));
+        report(numD, results, findMax(results));
 
     }
 }
